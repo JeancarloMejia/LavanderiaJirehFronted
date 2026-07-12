@@ -20,6 +20,9 @@ import { Registro } from "@/pages/Registro";
 import LandingPage from "@/pages/LandingPage";
 import NosotrosPage from "@/pages/NosotrosPage";
 import ServiciosPage from "@/pages/ServiciosPage";
+import Contacto from "@/pages/Contacto";
+import PoliticaPrivacidad from "@/pages/PoliticaPrivacidad";
+import TerminosUso from "@/pages/TerminosUso";
 import { useThemeStore } from "@/store/theme";
 
 const qc = new QueryClient({
@@ -50,6 +53,9 @@ export default function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/nosotros" element={<NosotrosPage />} />
             <Route path="/nuestros-servicios" element={<ServiciosPage />} />
+            <Route path="/contacto" element={<Contacto />} />
+            <Route path="/politica-privacidad" element={<PoliticaPrivacidad />} />
+            <Route path="/terminos-de-uso" element={<TerminosUso />} />
             <Route path="/seguimiento" element={<ConsultaPublica />} />
             <Route path="/pedido/:codigo" element={<ConsultaPublica />} />
             <Route path="/registro" element={<Registro />} />

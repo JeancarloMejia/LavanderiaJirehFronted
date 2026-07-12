@@ -8,12 +8,15 @@ import { FaFacebookF, FaInstagram, FaXTwitter, FaYoutube } from "react-icons/fa6
 import { Link } from "react-router-dom";
 
 const QUICK_LINKS = [
-  { label: "Inicio",            to: "/" },
-  { label: "Nosotros",          to: "/nosotros" },
-  { label: "Servicios",         to: "/nuestros-servicios" },
-  { label: "Cómo funcionamos",  to: "/#home" },
-  { label: "Blog",              to: "/#home" },
-  { label: "Contacto",          to: "/#contact" },
+  { label: "Inicio",    to: "/" },
+  { label: "Nosotros",  to: "/nosotros" },
+  { label: "Servicios", to: "/nuestros-servicios" },
+  { label: "Contacto",  to: "/contacto" },
+];
+
+const LEGAL_LINKS = [
+  { label: "Política de privacidad", to: "/politica-privacidad" },
+  { label: "Términos de uso",        to: "/terminos-de-uso" },
 ];
 
 const SERVICES_LIST = ["Lavado doméstico", "Limpieza en seco", "Eliminación de manchas", "Planchado profesional", "Limpieza de cortinas", "Pedidos al por mayor"];
@@ -234,10 +237,10 @@ export default function Footer() {
             © {new Date().getFullYear()} Lavandería Jireh. Todos los derechos reservados.
           </p>
           <div className="flex gap-4">
-            {["Política de privacidad", "Términos de uso", "Cookies"].map((link) => (
-              <a key={link} href="#" className="text-gray-500 hover:text-gray-300 text-xs transition-colors">
-                {link}
-              </a>
+            {LEGAL_LINKS.map(({ label, to }) => (
+              <Link key={label} to={to} className="text-gray-500 hover:text-gray-300 text-xs transition-colors">
+                {label}
+              </Link>
             ))}
           </div>
         </div>

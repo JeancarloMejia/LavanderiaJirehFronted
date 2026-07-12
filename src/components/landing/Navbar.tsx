@@ -8,7 +8,7 @@ const NAV_LINKS = [
   { label: "Nosotros",  to: "/nosotros" },
   { label: "Servicios", to: "/nuestros-servicios" },
   { label: "Mi pedido", to: "/seguimiento" },
-  { label: "Contacto",  to: "/#contact" },
+  { label: "Contacto",  to: "/contacto" },
 ];
 
 const navVariant = {
