@@ -55,7 +55,7 @@ export function ConsultaPublica() {
     setError("");
     setPedido(null);
     try {
-      const res = await api.get(`/pedido/${codigo.trim().toUpperCase()}/`);
+      const res = await api.get(`/api/pedido/${codigo.trim().toUpperCase()}/`);
       setPedido(res.data);
     } catch {
       setError("No encontramos ningún pedido con ese código. Verifica e intenta nuevamente.");
