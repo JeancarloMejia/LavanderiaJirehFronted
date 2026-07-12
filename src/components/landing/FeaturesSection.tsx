@@ -121,7 +121,7 @@ export default function FeaturesSection() {
                 <motion.img
                   whileHover={{ scale: 1.05 }}
                   transition={{ duration: 0.5 }}
-                  src="https://images.unsplash.com/photo-1521656958802-c50e5a3bde90?w=600&q=80"
+                  src="https://blog.washrocks.com/wp-content/uploads/2026/05/20260511A.png"
                   alt="Cliente feliz con ropa limpia de Jireh"
                   className="w-full h-full object-cover"
                 />

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
-import { ArrowRight, Star } from "lucide-react";
+import { ArrowRight, Star, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const BUBBLES = [
@@ -174,7 +174,10 @@ export default function HeroSection() {
                 className="absolute bottom-6 left-6 bg-white rounded-2xl px-4 py-3 shadow-xl"
               >
                 <p className="text-xs text-gray-500 font-medium">Entrega hoy</p>
-                <p className="text-sm font-bold text-dark">Limpieza express ✓</p>
+                <p className="text-sm font-bold text-dark flex items-center gap-1">
+                  Limpieza express
+                  <CheckCircle2 className="w-4 h-4 text-primary" />
+                </p>
               </motion.div>
 
               <motion.div
@@ -182,7 +185,7 @@ export default function HeroSection() {
                 transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 0.8 }}
                 className="absolute top-6 right-6 bg-white rounded-2xl px-3 py-2 shadow-xl flex items-center gap-2"
               >
-                <span className="text-lg">⭐</span>
+                <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
                 <div>
                   <p className="text-xs font-bold text-dark">4.9 / 5</p>
                   <p className="text-[10px] text-gray-400">2,400 reseñas</p>

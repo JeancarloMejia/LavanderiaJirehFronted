@@ -5,22 +5,22 @@ import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 const POSTS = [
   {
     image: "https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?w=600&q=80",
-    date: "29 Jul 2025", author: "Admin", comments: 12,
+    date: "29 Jul 2025", author: "Juan", comments: 12,
     title: "5 consejos para mantener tu ropa como nueva después de cada lavado",
   },
   {
     image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80",
-    date: "14 Ago 2025", author: "Admin", comments: 8,
+    date: "14 Ago 2025", author: "Jose", comments: 8,
     title: "Cómo elegir el mejor servicio de limpieza en seco para telas delicadas",
   },
   {
     image: "https://images.unsplash.com/photo-1604335399105-a0c585fd81a1?w=600&q=80",
-    date: "03 Sep 2025", author: "Admin", comments: 21,
+    date: "03 Sep 2025", author: "Adrian", comments: 21,
     title: "La guía definitiva para eliminar manchas difíciles en casa",
   },
   {
-    image: "https://images.unsplash.com/photo-1515940279136-d4e5a2b04166?w=600&q=80",
-    date: "18 Oct 2025", author: "Admin", comments: 15,
+    image: "https://mejorconsalud.as.com/wp-content/uploads/2021/02/lavado-tintoreria.jpg",
+    date: "18 Oct 2025", author: "Veronica", comments: 15,
     title: "Limpieza en seco vs lavado tradicional: ¿cuándo elegir cada uno?",
   },
 ];
