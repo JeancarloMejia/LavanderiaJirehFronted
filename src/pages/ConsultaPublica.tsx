@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, WashingMachine, Package, Clock, CheckCircle2, XCircle, Loader2, ShieldCheck, Sparkles, Phone } from "lucide-react";
 import { formatCurrency, formatDate, cn } from "@/lib/utils";
-import axios from "axios";
+import api from "@/lib/api";
 import type { EstadoPedidoValue } from "@/types";
 
 interface PedidoPublico {
@@ -55,7 +55,7 @@ export function ConsultaPublica() {
     setError("");
     setPedido(null);
     try {
-      const res = await axios.get(`/pedido/${codigo.trim().toUpperCase()}/`);
+      const res = await api.get(`/pedido/${codigo.trim().toUpperCase()}/`);
       setPedido(res.data);
     } catch {
       setError("No encontramos ningún pedido con ese código. Verifica e intenta nuevamente.");
