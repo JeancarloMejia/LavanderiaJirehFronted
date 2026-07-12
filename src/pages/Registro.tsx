@@ -4,7 +4,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import axios from "axios";
-import { WashingMachine, CheckCircle2, LogIn, ArrowLeft } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { WashingMachine, CheckCircle2, LogIn, ArrowLeft, Sparkles, Clock, ShieldCheck } from "lucide-react";
 
 const schema = z.object({
   nombres:   z.string().min(2, "Mínimo 2 caracteres"),
@@ -16,6 +17,12 @@ const schema = z.object({
 });
 
 type FormData = z.infer<typeof schema>;
+
+const BENEFICIOS = [
+  { icon: Sparkles,    title: "Seguimiento en línea", desc: "Consulta el estado de tus pedidos en tiempo real" },
+  { icon: Clock,       title: "Historial completo",   desc: "Accede a todos tus pedidos anteriores cuando quieras" },
+  { icon: ShieldCheck, title: "Datos protegidos",      desc: "Tu información siempre segura con nosotros" },
+];
 
 function Field({
   label,
@@ -83,46 +90,99 @@ export function Registro() {
 
   if (success) {
     return (
-      <div className="min-h-screen flex flex-col bg-white">
-        <div className="flex-1 flex items-center justify-center px-4 py-24">
-          <div className="max-w-md w-full text-center">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-5">
-              <CheckCircle2 className="w-8 h-8 text-green-500" />
-            </div>
-            <h2 className="text-2xl font-bold text-dark mb-3">¡Registro exitoso!</h2>
-            <p className="text-gray-500 mb-6 leading-relaxed">
-              Tu cuenta de cliente ha sido creada. Puedes acercarte al local o llamarnos
-              para agendar tu primer pedido.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Link
-                to="/seguimiento"
-                className="px-6 py-3 bg-primary text-white font-semibold rounded-full hover:opacity-90 transition-opacity"
-              >
-                Consultar mi pedido
-              </Link>
-              <Link
-                to="/"
-                className="px-6 py-3 border border-gray-200 text-dark font-semibold rounded-full hover:border-primary hover:text-primary transition-colors"
-              >
-                Ir al inicio
-              </Link>
-            </div>
-          </div>
+      <div className="min-h-screen bg-gradient-to-br from-primary/8 via-white to-gray-50 flex items-center justify-center px-4 py-24 relative overflow-hidden">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
+          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
         </div>
+        <motion.div
+          initial={{ opacity: 0, y: 20, scale: 0.96 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="max-w-md w-full text-center relative bg-white rounded-3xl p-10 shadow-xl border border-gray-100"
+        >
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+            className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-5"
+          >
+            <CheckCircle2 className="w-8 h-8 text-green-500" />
+          </motion.div>
+          <h2 className="text-2xl font-bold text-dark mb-3">¡Registro exitoso!</h2>
+          <p className="text-gray-500 mb-6 leading-relaxed">
+            Tu cuenta de cliente ha sido creada. Puedes acercarte al local o llamarnos
+            para agendar tu primer pedido.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Link
+              to="/seguimiento"
+              className="px-6 py-3 bg-primary text-white font-semibold rounded-full hover:opacity-90 transition-opacity"
+            >
+              Consultar mi pedido
+            </Link>
+            <Link
+              to="/"
+              className="px-6 py-3 border border-gray-200 text-dark font-semibold rounded-full hover:border-primary hover:text-primary transition-colors"
+            >
+              Ir al inicio
+            </Link>
+          </div>
+        </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
-      <div className="flex-1 flex items-start justify-center px-4 py-24">
-        <div className="w-full max-w-lg">
+    <div className="min-h-screen bg-gradient-to-br from-primary/8 via-white to-gray-50 py-10 lg:py-16 px-4 relative overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
+      </div>
+
+      <div className="max-w-5xl mx-auto relative flex flex-col lg:grid lg:grid-cols-[1fr_1.2fr] gap-6 lg:gap-8 items-start">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="order-1 lg:order-none bg-primary rounded-3xl p-6 lg:p-8 text-white lg:sticky lg:top-24 flex flex-col items-center"
+        >
+          <div className="w-12 h-12 rounded-2xl bg-white/15 flex items-center justify-center mb-5">
+            <WashingMachine className="w-6 h-6 text-white" />
+          </div>
+          <h2 className="text-2xl font-extrabold mb-3 text-center">Únete a Lavandería Jireh</h2>
+          <p className="text-white/80 text-sm leading-relaxed mb-8 text-center">
+            Crea tu cuenta gratis y disfruta de todos los beneficios de ser cliente Jireh.
+          </p>
+          <div className="space-y-5 w-full">
+            {BENEFICIOS.map(({ icon: Icon, title, desc }, i) => (
+              <motion.div
+                key={title}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 + i * 0.1, duration: 0.4 }}
+                className="flex items-start gap-3"
+              >
+                <div className="w-9 h-9 rounded-xl bg-white/15 flex items-center justify-center shrink-0">
+                  <Icon className="w-4 h-4 text-white" />
+                </div>
+                <div>
+                  <p className="font-semibold text-sm">{title}</p>
+                  <p className="text-white/70 text-xs leading-relaxed mt-0.5">{desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
+          className="order-2 lg:order-none w-full bg-white rounded-3xl p-8 shadow-xl border border-gray-100"
+        >
           <div className="mb-8 text-center">
-            <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center mx-auto mb-4">
-              <WashingMachine className="w-6 h-6 text-white" />
-            </div>
-            <h1 className="text-2xl font-extrabold text-dark">Crear cuenta de cliente</h1>
+            <h1 className="text-2xl font-extrabold text-dark">Crear cuenta</h1>
             <p className="text-gray-500 text-sm mt-2">
               Regístrate para hacer seguimiento a tus pedidos y más.
             </p>
@@ -181,19 +241,28 @@ export function Registro() {
               />
             </Field>
 
-            {serverError && (
-              <div className="bg-red-50 border border-red-100 rounded-xl px-4 py-3">
-                <p className="text-sm text-red-600">{serverError}</p>
-              </div>
-            )}
+            <AnimatePresence>
+              {serverError && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="bg-red-50 border border-red-100 rounded-xl px-4 py-3 overflow-hidden"
+                >
+                  <p className="text-sm text-red-600">{serverError}</p>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
-            <button
+            <motion.button
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.98 }}
               type="submit"
               disabled={isSubmitting}
               className="w-full py-3.5 bg-primary text-white font-semibold rounded-xl hover:opacity-90 transition-opacity disabled:opacity-60 disabled:cursor-not-allowed mt-2"
             >
               {isSubmitting ? "Registrando..." : "Crear mi cuenta"}
-            </button>
+            </motion.button>
           </form>
 
           <div className="mt-6 flex flex-col items-center gap-3 text-sm text-gray-500">
@@ -204,7 +273,7 @@ export function Registro() {
               </Link>
             </p>
             <p>
-              ¿Eres empleado?{" "}
+              ¿Ya tienes una cuenta?{" "}
               <Link to="/login" className="text-primary font-semibold hover:underline inline-flex items-center gap-1">
                 <LogIn className="w-3.5 h-3.5" /> Acceder al sistema
               </Link>
@@ -213,7 +282,7 @@ export function Registro() {
               <ArrowLeft className="w-3.5 h-3.5" /> Volver al inicio
             </Link>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

@@ -8,7 +8,7 @@ export function PublicLayout() {
     <div className="bg-white">
       <ScrollToTop />
       <Navbar />
-      <main>
+      <main className="pt-16 md:pt-20">
         <Outlet />
       </main>
       <Footer />

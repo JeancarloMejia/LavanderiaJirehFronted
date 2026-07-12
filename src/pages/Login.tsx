@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { WashingMachine, Lock, User, Eye, EyeOff } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { WashingMachine, Lock, User, Eye, EyeOff, ArrowLeft, ShieldCheck } from "lucide-react";
 import { useAuthStore } from "@/store/auth";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
@@ -45,23 +46,41 @@ export function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-[#f0f9ff] via-white to-[#e0f7fa] dark:from-[#07080F] dark:via-[#0D0A1F] dark:to-[#07080F] flex items-center justify-center p-4">
-      {/* Background decoration */}
+    <div className="min-h-screen bg-linear-to-br from-[#f0f9ff] via-white to-[#e0f7fa] dark:from-[#07080F] dark:via-[#0D0A1F] dark:to-[#07080F] flex items-center justify-center p-4 relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl" />
+        <motion.div
+          animate={{ scale: [1, 1.15, 1], opacity: [0.5, 0.85, 0.5] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute -top-40 -right-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl"
+        />
+        <motion.div
+          animate={{ scale: [1, 1.15, 1], opacity: [0.5, 0.85, 0.5] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
+          className="absolute -bottom-40 -left-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl"
+        />
       </div>
 
       <div className="w-full max-w-md relative">
-        {/* Card */}
-        <div className="bg-white dark:bg-white/5 backdrop-blur-xl border border-slate-200 dark:border-white/10 rounded-3xl p-8 shadow-xl shadow-slate-200/60 dark:shadow-black/40">
-          {/* Logo */}
+        <motion.div
+          initial={{ opacity: 0, y: 24, scale: 0.97 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="bg-white dark:bg-white/5 backdrop-blur-xl border border-slate-200 dark:border-white/10 rounded-3xl p-8 shadow-xl shadow-slate-200/60 dark:shadow-black/40"
+        >
           <div className="flex flex-col items-center mb-8">
-            <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center shadow-2xl shadow-primary/30 mb-4">
+            <motion.div
+              animate={{ rotate: [0, -8, 8, 0] }}
+              transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 3, ease: "easeInOut" }}
+              className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center shadow-2xl shadow-primary/30 mb-4"
+            >
               <WashingMachine className="w-8 h-8 text-white" />
-            </div>
+            </motion.div>
+            <span className="inline-flex items-center gap-1.5 text-xs font-bold text-primary uppercase tracking-widest mb-2">
+              <ShieldCheck className="w-3.5 h-3.5" />
+              Acceso
+            </span>
             <h1 className="text-2xl font-bold text-slate-800 dark:text-white">Lavandería Jireh</h1>
-            <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Sistema de gestión</p>
+            <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Ingresa con tu cuenta</p>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -99,11 +118,18 @@ export function Login() {
               {errors.password && <p className="text-xs text-red-500 dark:text-red-400">{errors.password.message}</p>}
             </div>
 
-            {serverError && (
-              <div className="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl px-4 py-3">
-                <p className="text-red-600 dark:text-red-400 text-sm">{serverError}</p>
-              </div>
-            )}
+            <AnimatePresence>
+              {serverError && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl px-4 py-3 overflow-hidden"
+                >
+                  <p className="text-red-600 dark:text-red-400 text-sm">{serverError}</p>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             <Button
               type="submit"
@@ -113,11 +139,26 @@ export function Login() {
               Ingresar al sistema
             </Button>
           </form>
-        </div>
 
-        <p className="text-center text-slate-400 dark:text-slate-600 text-xs mt-6">
-          © {new Date().getFullYear()} Lavandería Jireh — Sistema interno
-        </p>
+          <div className="mt-6 pt-6 border-t border-slate-100 dark:border-white/10 flex justify-center">
+            <Link
+              to="/"
+              className="inline-flex items-center gap-1.5 text-sm text-slate-400 dark:text-slate-500 hover:text-primary transition-colors"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              Volver al inicio
+            </Link>
+          </div>
+        </motion.div>
+
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+          className="text-center text-slate-400 dark:text-slate-600 text-xs mt-6"
+        >
+          © {new Date().getFullYear()} Lavandería Jireh
+        </motion.p>
       </div>
     </div>
   );
