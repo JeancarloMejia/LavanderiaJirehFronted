@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Outlet, Navigate } from "react-router-dom";
 import { useAuthStore } from "@/store/auth";
 import { Sidebar } from "./Sidebar";
+import { ScrollToTop } from "./ScrollToTop";
 import { Menu } from "lucide-react";
 
 export function AppLayout() {
@@ -12,9 +13,9 @@ export function AppLayout() {
 
   return (
     <div className="flex min-h-screen bg-[#f0f9ff] dark:bg-[#0B0D17]">
+      <ScrollToTop />
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      {/* Overlay para mobile */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black/30 z-30 md:hidden"
@@ -23,7 +24,6 @@ export function AppLayout() {
       )}
 
       <main className="flex-1 md:ml-60 min-h-screen">
-        {/* Header mobile con hamburguesa */}
         <div className="flex items-center gap-3 px-4 py-4 border-b border-slate-200 dark:border-white/6 bg-white dark:bg-[#0D0F1A] md:hidden">
           <button
             onClick={() => setSidebarOpen(true)}
