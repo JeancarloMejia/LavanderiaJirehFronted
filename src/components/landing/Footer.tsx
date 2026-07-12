@@ -2,12 +2,20 @@ import { useState } from "react";
 import { motion, AnimatePresence, type Variants } from "framer-motion";
 import {
   WashingMachine, Phone, Mail, MapPin,
-  ChevronUp, Send, Clock,
+  ChevronUp, Send, Clock, CheckCircle2,
 } from "lucide-react";
 import { FaFacebookF, FaInstagram, FaXTwitter, FaYoutube } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
-const QUICK_LINKS  = ["Inicio", "Nosotros", "Servicios", "Cómo funcionamos", "Blog", "Contacto"];
+const QUICK_LINKS = [
+  { label: "Inicio",            to: "/" },
+  { label: "Nosotros",          to: "/nosotros" },
+  { label: "Servicios",         to: "/nuestros-servicios" },
+  { label: "Cómo funcionamos",  to: "/#home" },
+  { label: "Blog",              to: "/#home" },
+  { label: "Contacto",          to: "/#contact" },
+];
+
 const SERVICES_LIST = ["Lavado doméstico", "Limpieza en seco", "Eliminación de manchas", "Planchado profesional", "Limpieza de cortinas", "Pedidos al por mayor"];
 const CATEGORIES    = ["Ropa diaria", "Ropa formal", "Telas delicadas", "Ropa infantil", "Ropa deportiva", "Ropa de cama y lencería"];
 
@@ -26,17 +34,21 @@ const colVariant: Variants = {
   }),
 };
 
-function FooterLink({ href = "#", children }: { href?: string; children: React.ReactNode }) {
+function FooterLink({ to, children }: { to: string; children: React.ReactNode }) {
   return (
     <li className="text-sm">
-      <motion.a
-        href={href}
+      <motion.div
         whileHover={{ x: 4 }}
         transition={{ type: "spring", stiffness: 400 }}
-        className="text-gray-400 hover:text-primary transition-colors duration-200 block"
+        className="inline-block"
       >
-        {children}
-      </motion.a>
+        <Link
+          to={to}
+          className="text-gray-400 hover:text-primary transition-colors duration-200 block"
+        >
+          {children}
+        </Link>
+      </motion.div>
     </li>
   );
 }
@@ -66,14 +78,14 @@ export default function Footer() {
             custom={0} variants={colVariant} initial="hidden" whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
           >
-            <a href="#home" className="flex items-center gap-2 mb-4">
+            <Link to="/" className="flex items-center gap-2 mb-4">
               <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center">
                 <WashingMachine className="w-5 h-5 text-white" />
               </div>
               <span className="text-xl font-extrabold tracking-tight">
                 Jireh<span className="text-primary">.</span>
               </span>
-            </a>
+            </Link>
             <p className="text-gray-400 text-sm leading-relaxed mb-5">
               Lavandería y limpieza en seco profesional a domicilio. Con más de 15 años de experiencia
               y 20,000 clientes satisfechos, Jireh es tu aliado para prendas perfectas.
@@ -121,7 +133,7 @@ export default function Footer() {
           <motion.div custom={1} variants={colVariant} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }}>
             <h3 className="text-sm font-bold uppercase tracking-widest text-white mb-5">Links rápidos</h3>
             <ul className="space-y-2.5">
-              {QUICK_LINKS.map((link) => <FooterLink key={link}>{link}</FooterLink>)}
+              {QUICK_LINKS.map(({ label, to }) => <FooterLink key={label} to={to}>{label}</FooterLink>)}
             </ul>
           </motion.div>
 
@@ -207,7 +219,8 @@ export default function Footer() {
                   transition={{ type: "spring", stiffness: 300 }}
                   className="flex items-center gap-2 text-primary font-semibold"
                 >
-                  ✓ ¡Gracias por suscribirte!
+                  <CheckCircle2 className="w-4 h-4" />
+                  ¡Gracias por suscribirte!
                 </motion.div>
               )}
             </AnimatePresence>

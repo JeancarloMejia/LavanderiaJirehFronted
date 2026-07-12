@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AppLayout } from "@/components/layout/AppLayout";
+import { PublicLayout } from "@/components/layout/PublicLayout";
 import { Login } from "@/pages/Login";
 import { Dashboard } from "@/pages/Dashboard";
 import { Pedidos } from "@/pages/Pedidos";
@@ -45,14 +46,16 @@ export default function App() {
     <QueryClientProvider client={qc}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/nosotros" element={<NosotrosPage />} />
-          <Route path="/nuestros-servicios" element={<ServiciosPage />} />
-          <Route path="/registro" element={<Registro />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/seguimiento" element={<ConsultaPublica />} />
-          <Route path="/pedido/:codigo" element={<ConsultaPublica />} />
-          <Route path="/pedidos/:id/recibo" element={<Recibo />} />
+          <Route element={<PublicLayout />}>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/nosotros" element={<NosotrosPage />} />
+            <Route path="/nuestros-servicios" element={<ServiciosPage />} />
+            <Route path="/seguimiento" element={<ConsultaPublica />} />
+            <Route path="/pedido/:codigo" element={<ConsultaPublica />} />
+            <Route path="/registro" element={<Registro />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/pedidos/:id/recibo" element={<Recibo />} />
+          </Route>
 
           <Route element={<AppLayout />}>
             <Route path="/dashboard" element={<Dashboard />} />

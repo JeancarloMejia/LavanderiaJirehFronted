@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import axios from "axios";
 import { WashingMachine, CheckCircle2, LogIn, ArrowLeft } from "lucide-react";
-import { PublicNavbar, PublicFooter } from "@/components/landing/PublicLayout";
 
 const schema = z.object({
   nombres:   z.string().min(2, "Mínimo 2 caracteres"),
@@ -85,7 +84,6 @@ export function Registro() {
   if (success) {
     return (
       <div className="min-h-screen flex flex-col bg-white">
-        <PublicNavbar />
         <div className="flex-1 flex items-center justify-center px-4 py-24">
           <div className="max-w-md w-full text-center">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-5">
@@ -112,18 +110,14 @@ export function Registro() {
             </div>
           </div>
         </div>
-        <PublicFooter />
       </div>
     );
   }
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
-      <PublicNavbar />
-
       <div className="flex-1 flex items-start justify-center px-4 py-24">
         <div className="w-full max-w-lg">
-          {/* Cabecera */}
           <div className="mb-8 text-center">
             <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center mx-auto mb-4">
               <WashingMachine className="w-6 h-6 text-white" />
@@ -221,8 +215,6 @@ export function Registro() {
           </div>
         </div>
       </div>
-
-      <PublicFooter />
     </div>
   );
 }

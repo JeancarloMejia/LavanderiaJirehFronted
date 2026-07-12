@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { WashingMachine, Shirt, Sparkles, Flame, Wind, Layers, ArrowRight } from "lucide-react";
-import { PublicNavbar, PublicFooter } from "@/components/landing/PublicLayout";
 
 const SERVICIOS = [
   {
@@ -63,10 +62,7 @@ const PASOS = [
 
 export default function ServiciosPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-white">
-      <PublicNavbar />
-
-      {/* Hero */}
+    <div className="bg-white">
       <section className="pt-28 pb-14 bg-gradient-to-br from-primary/8 via-white to-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
           <span className="inline-block text-xs font-bold text-primary uppercase tracking-widest mb-3">
@@ -81,7 +77,6 @@ export default function ServiciosPage() {
         </div>
       </section>
 
-      {/* Grid de servicios */}
       <section className="py-16">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -114,7 +109,6 @@ export default function ServiciosPage() {
         </div>
       </section>
 
-      {/* Cómo funciona */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <h2 className="text-2xl font-bold text-dark text-center mb-10">¿Cómo funciona?</h2>
@@ -132,7 +126,6 @@ export default function ServiciosPage() {
         </div>
       </section>
 
-      {/* CTA */}
       <section className="py-16">
         <div className="max-w-xl mx-auto px-4 sm:px-6 text-center">
           <h2 className="text-2xl font-bold text-dark mb-3">¿Tienes un pedido activo?</h2>
@@ -147,8 +140,6 @@ export default function ServiciosPage() {
           </div>
         </div>
       </section>
-
-      <PublicFooter />
     </div>
   );
 }

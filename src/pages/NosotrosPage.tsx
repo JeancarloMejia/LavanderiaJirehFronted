@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { Heart, Clock, Shield, Star, Users } from "lucide-react";
-import { PublicNavbar, PublicFooter } from "@/components/landing/PublicLayout";
 
 const VALORES = [
   { icon: Heart,  color: "text-rose-500",   bg: "bg-rose-50",   title: "Compromiso",  desc: "Cada prenda se trata como si fuera propia. La calidad es nuestra promesa desde el primer día." },
@@ -18,10 +17,7 @@ const STATS = [
 
 export default function NosotrosPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-white">
-      <PublicNavbar />
-
-      {/* Hero */}
+    <div className="bg-white">
       <section className="pt-28 pb-16 bg-gradient-to-br from-primary/8 via-white to-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
           <span className="inline-block text-xs font-bold text-primary uppercase tracking-widest mb-3">
@@ -37,7 +33,6 @@ export default function NosotrosPage() {
         </div>
       </section>
 
-      {/* Historia + Stats */}
       <section className="py-16">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -66,7 +61,6 @@ export default function NosotrosPage() {
         </div>
       </section>
 
-      {/* Valores */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <h2 className="text-2xl font-bold text-dark text-center mb-10">Nuestros valores</h2>
@@ -86,7 +80,6 @@ export default function NosotrosPage() {
         </div>
       </section>
 
-      {/* CTA */}
       <section className="py-16">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 text-center">
           <Users className="w-10 h-10 text-primary mx-auto mb-4" />
@@ -110,8 +103,6 @@ export default function NosotrosPage() {
           </div>
         </div>
       </section>
-
-      <PublicFooter />
     </div>
   );
 }

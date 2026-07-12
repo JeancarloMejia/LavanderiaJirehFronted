@@ -4,11 +4,11 @@ import { WashingMachine, Menu, X, LogIn } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const NAV_LINKS = [
-  { label: "Inicio",      href: "#home",     to: null },
-  { label: "Nosotros",    href: null,        to: "/nosotros" },
-  { label: "Servicios",   href: null,        to: "/nuestros-servicios" },
-  { label: "Mi pedido",   href: null,        to: "/seguimiento" },
-  { label: "Contacto",    href: "#contact",  to: null },
+  { label: "Inicio",    to: "/" },
+  { label: "Nosotros",  to: "/nosotros" },
+  { label: "Servicios", to: "/nuestros-servicios" },
+  { label: "Mi pedido", to: "/seguimiento" },
+  { label: "Contacto",  to: "/#contact" },
 ];
 
 const navVariant = {
@@ -48,51 +48,38 @@ export default function Navbar() {
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
 
-          {/* Logo */}
-          <motion.a
-            href="#home"
-            className="flex items-center gap-2"
+          <motion.div
             whileHover={{ scale: 1.03 }}
             transition={{ type: "spring", stiffness: 400 }}
           >
-            <motion.div
-              animate={{ rotate: [0, -8, 8, 0] }}
-              transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 4, ease: "easeInOut" }}
-              className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center shadow-sm"
-            >
-              <WashingMachine className="w-5 h-5 text-white" />
-            </motion.div>
-            <span className="text-xl font-extrabold text-dark tracking-tight">
-              Jireh<span className="text-primary">.</span>
-            </span>
-          </motion.a>
+            <Link to="/" className="flex items-center gap-2">
+              <motion.div
+                animate={{ rotate: [0, -8, 8, 0] }}
+                transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 4, ease: "easeInOut" }}
+                className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center shadow-sm"
+              >
+                <WashingMachine className="w-5 h-5 text-white" />
+              </motion.div>
+              <span className="text-xl font-extrabold text-dark tracking-tight">
+                Jireh<span className="text-primary">.</span>
+              </span>
+            </Link>
+          </motion.div>
 
-          {/* Links escritorio */}
           <ul className="hidden md:flex items-center gap-1">
-            {NAV_LINKS.map(({ label, href, to }, i) => (
+            {NAV_LINKS.map(({ label, to }, i) => (
               <motion.li key={label} custom={i} variants={linkVariant} initial="hidden" animate="visible">
-                {to ? (
-                  <Link
-                    to={to}
-                    className="relative px-4 py-2 text-sm font-medium text-gray-600 hover:text-primary transition-colors duration-200 group inline-block"
-                  >
-                    {label}
-                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 w-0 bg-primary rounded-full transition-all duration-300 group-hover:w-4/5" />
-                  </Link>
-                ) : (
-                  <a
-                    href={href!}
-                    className="relative px-4 py-2 text-sm font-medium text-gray-600 hover:text-primary transition-colors duration-200 group inline-block"
-                  >
-                    {label}
-                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 w-0 bg-primary rounded-full transition-all duration-300 group-hover:w-4/5" />
-                  </a>
-                )}
+                <Link
+                  to={to}
+                  className="relative px-4 py-2 text-sm font-medium text-gray-600 hover:text-primary transition-colors duration-200 group inline-block"
+                >
+                  {label}
+                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 w-0 bg-primary rounded-full transition-all duration-300 group-hover:w-4/5" />
+                </Link>
               </motion.li>
             ))}
           </ul>
 
-          {/* CTAs escritorio */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -121,7 +108,6 @@ export default function Navbar() {
             </Link>
           </motion.div>
 
-          {/* Toggle móvil */}
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={() => setMobileOpen(!mobileOpen)}
@@ -143,7 +129,6 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Menú móvil */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
@@ -154,30 +139,20 @@ export default function Navbar() {
             className="md:hidden bg-white border-t border-gray-100 overflow-hidden"
           >
             <ul className="flex flex-col px-4 py-4 gap-1">
-              {NAV_LINKS.map(({ label, href, to }, i) => (
+              {NAV_LINKS.map(({ label, to }, i) => (
                 <motion.li
                   key={label}
                   initial={{ opacity: 0, x: -16 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.06, duration: 0.28 }}
                 >
-                  {to ? (
-                    <Link
-                      to={to}
-                      onClick={() => setMobileOpen(false)}
-                      className="block px-4 py-2.5 text-sm font-medium text-gray-700 hover:text-primary hover:bg-primary/5 rounded-xl transition-all"
-                    >
-                      {label}
-                    </Link>
-                  ) : (
-                    <a
-                      href={href!}
-                      onClick={() => setMobileOpen(false)}
-                      className="block px-4 py-2.5 text-sm font-medium text-gray-700 hover:text-primary hover:bg-primary/5 rounded-xl transition-all"
-                    >
-                      {label}
-                    </a>
-                  )}
+                  <Link
+                    to={to}
+                    onClick={() => setMobileOpen(false)}
+                    className="block px-4 py-2.5 text-sm font-medium text-gray-700 hover:text-primary hover:bg-primary/5 rounded-xl transition-all"
+                  >
+                    {label}
+                  </Link>
                 </motion.li>
               ))}
               <motion.li
