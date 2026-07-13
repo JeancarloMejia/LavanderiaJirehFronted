@@ -60,8 +60,9 @@ export default function App() {
             <Route path="/pedido/:codigo" element={<ConsultaPublica />} />
             <Route path="/registro" element={<Registro />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/pedidos/:id/recibo" element={<Recibo />} />
           </Route>
+
+          <Route path="/pedidos/:id/recibo" element={<Recibo />} />
 
           <Route element={<AppLayout />}>
             <Route path="/dashboard" element={<Dashboard />} />

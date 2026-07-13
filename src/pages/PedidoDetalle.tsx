@@ -18,34 +18,38 @@ import api from "@/lib/api";
 import type { Pedido, EstadoPedidoValue } from "@/types";
 
 const ESTADOS_OPTIONS = [
-  { value: "pendiente",  label: "Pendiente" },
+  { value: "pendiente", label: "Pendiente" },
   { value: "en_proceso", label: "En Proceso" },
-  { value: "listo",      label: "Listo para entrega" },
-  { value: "entregado",  label: "Entregado" },
-  { value: "cancelado",  label: "Cancelado" },
+  { value: "listo", label: "Listo para entrega" },
+  { value: "entregado", label: "Entregado" },
+  { value: "cancelado", label: "Cancelado" },
 ];
 
 const METODOS_PAGO = [
-  { value: "efectivo",      label: "Efectivo" },
-  { value: "yape",          label: "Yape" },
-  { value: "plin",          label: "Plin" },
-  { value: "tarjeta",       label: "Tarjeta" },
+  { value: "efectivo", label: "Efectivo" },
+  { value: "yape", label: "Yape" },
+  { value: "plin", label: "Plin" },
+  { value: "tarjeta", label: "Tarjeta" },
   { value: "transferencia", label: "Transferencia" },
 ];
 
+const LABEL_CLASS = "text-sm font-medium text-black dark:text-white mb-1.5 block";
+const FIELD_CLASS =
+  "bg-white dark:bg-black text-black dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-400";
+
 export function PedidoDetalle() {
   const { id } = useParams<{ id: string }>();
-  const navigate   = useNavigate();
-  const qc         = useQueryClient();
+  const navigate = useNavigate();
+  const qc = useQueryClient();
   const isOperario = useAuthStore((s) => s.isOperario)();
 
-  const [modalEstado, setModalEstado]     = useState(false);
-  const [modalPago, setModalPago]         = useState(false);
+  const [modalEstado, setModalEstado] = useState(false);
+  const [modalPago, setModalPago] = useState(false);
   const [confirmEliminar, setConfirmEliminar] = useState(false);
   const [nuevoEstado, setNuevoEstado] = useState<EstadoPedidoValue>("pendiente");
   const [descripcion, setDescripcion] = useState("");
-  const [monto, setMonto]             = useState("");
-  const [metodoPago, setMetodoPago]   = useState("efectivo");
+  const [monto, setMonto] = useState("");
+  const [metodoPago, setMetodoPago] = useState("efectivo");
 
   const { data: pedido, isLoading } = useQuery<Pedido>({
     queryKey: ["pedido", id],
@@ -91,7 +95,6 @@ export function PedidoDetalle() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-start gap-3">
         <div className="flex items-center gap-4 flex-1 min-w-0">
           <button
@@ -102,10 +105,10 @@ export function PedidoDetalle() {
           </button>
           <div className="min-w-0">
             <div className="flex items-center gap-3 flex-wrap">
-              <h1 className="text-2xl font-bold text-white font-mono">{pedido.codigo}</h1>
+              <h1 className="text-2xl font-bold text-black dark:text-white font-mono">{pedido.codigo}</h1>
               <EstadoBadge estado={pedido.estado} />
             </div>
-            <p className="text-slate-400 text-sm mt-0.5 truncate">{pedido.cliente_nombre} · Ingresado {formatDate(pedido.fecha_ingreso)}</p>
+            <p className="text-slate-500 dark:text-slate-400 text-sm mt-0.5 truncate">{pedido.cliente_nombre} · Ingresado {formatDate(pedido.fecha_ingreso)}</p>
           </div>
         </div>
         <div className="flex items-center gap-2 flex-wrap sm:shrink-0">
@@ -146,92 +149,88 @@ export function PedidoDetalle() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Info + Prendas */}
         <div className="lg:col-span-2 space-y-5">
-          {/* Info general */}
           <Card>
             <CardHeader>
-              <h2 className="text-sm font-semibold text-slate-100">Información del pedido</h2>
+              <h2 className="text-sm font-semibold text-black dark:text-white">Información del pedido</h2>
             </CardHeader>
             <CardBody>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {[
-                  { label: "Cliente",       value: pedido.cliente_nombre },
-                  { label: "Empleado",      value: pedido.empleado_nombre },
-                  { label: "Ingreso",       value: formatDate(pedido.fecha_ingreso) },
-                  { label: "Entrega",       value: formatDate(pedido.fecha_entrega) },
-                  { label: "Total",         value: <span className="text-lg font-bold text-white">{formatCurrency(pedido.total)}</span> },
+                  { label: "Cliente", value: pedido.cliente_nombre },
+                  { label: "Empleado", value: pedido.empleado_nombre },
+                  { label: "Ingreso", value: formatDate(pedido.fecha_ingreso) },
+                  { label: "Entrega", value: formatDate(pedido.fecha_entrega) },
+                  { label: "Total", value: <span className="text-lg font-bold text-black dark:text-white">{formatCurrency(pedido.total)}</span> },
                   { label: "Observaciones", value: pedido.observaciones || "—" },
                 ].map(({ label, value }) => (
                   <div key={label}>
-                    <p className="text-xs text-slate-500 font-medium mb-0.5">{label}</p>
-                    <p className="text-sm text-slate-200">{value}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mb-0.5">{label}</p>
+                    <p className="text-sm text-slate-800 dark:text-slate-200">{value}</p>
                   </div>
                 ))}
               </div>
             </CardBody>
           </Card>
 
-          {/* Prendas */}
           <Card>
             <CardHeader>
               <div className="flex items-center gap-2">
                 <Package className="w-4 h-4 text-slate-500" />
-                <h2 className="text-sm font-semibold text-slate-100">
+                <h2 className="text-sm font-semibold text-black dark:text-white">
                   Prendas ({pedido.prendas.length})
                 </h2>
               </div>
             </CardHeader>
-            <div className="divide-y divide-white/5">
+            <div className="divide-y divide-slate-100 dark:divide-white/5">
               {pedido.prendas.map((prenda, i) => (
                 <div key={prenda.id ?? i} className="px-5 py-3.5 flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-slate-100">{prenda.tipo_prenda}</p>
-                    <p className="text-xs text-slate-500">
+                    <p className="text-sm font-medium text-slate-800 dark:text-slate-100">{prenda.tipo_prenda}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
                       Color: {prenda.color || "—"} · Peso: {prenda.peso} kg · Cantidad: {prenda.cantidad}
                     </p>
                     {prenda.observaciones && (
-                      <p className="text-xs text-slate-500 mt-0.5">{prenda.observaciones}</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{prenda.observaciones}</p>
                     )}
                   </div>
                 </div>
               ))}
               {pedido.prendas.length === 0 && (
-                <p className="px-5 py-4 text-sm text-slate-500">Sin prendas registradas</p>
+                <p className="px-5 py-4 text-sm text-slate-500 dark:text-slate-400">Sin prendas registradas</p>
               )}
             </div>
           </Card>
         </div>
 
-        {/* Timeline */}
         <div>
           <Card className="h-fit">
             <CardHeader>
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4 text-slate-500" />
-                <h2 className="text-sm font-semibold text-slate-100">Historial de estados</h2>
+                <h2 className="text-sm font-semibold text-black dark:text-white">Historial de estados</h2>
               </div>
             </CardHeader>
             <CardBody className="py-4">
               {pedido.estados.length === 0 && (
-                <p className="text-sm text-slate-500">Sin historial</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">Sin historial</p>
               )}
               <div className="space-y-4">
                 {[...pedido.estados].reverse().map((estado, i) => (
                   <div key={estado.id} className="flex gap-3">
                     <div className="flex flex-col items-center">
-                      <div className={`w-2.5 h-2.5 rounded-full mt-1 shrink-0 ${i === 0 ? "bg-violet-500" : "bg-slate-600"}`} />
+                      <div className={`w-2.5 h-2.5 rounded-full mt-1 shrink-0 ${i === 0 ? "bg-violet-500" : "bg-slate-400 dark:bg-slate-600"}`} />
                       {i < pedido.estados.length - 1 && (
-                        <div className="w-px flex-1 bg-white/10 mt-1.5 mb-0" />
+                        <div className="w-px flex-1 bg-slate-200 dark:bg-white/10 mt-1.5 mb-0" />
                       )}
                     </div>
                     <div className="pb-3">
-                      <p className="text-xs font-semibold text-slate-200 capitalize">
+                      <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 capitalize">
                         {estado.estado.replace("_", " ")}
                       </p>
-                      <p className="text-xs text-slate-500">{formatDate(estado.fecha_estado)}</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">{formatDate(estado.fecha_estado)}</p>
                       {estado.descripcion && (
-                        <p className="text-xs text-slate-400 mt-0.5">{estado.descripcion}</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{estado.descripcion}</p>
                       )}
                     </div>
                   </div>
@@ -242,7 +241,6 @@ export function PedidoDetalle() {
         </div>
       </div>
 
-      {/* Modal confirmar eliminación */}
       <ConfirmModal
         open={confirmEliminar}
         onClose={() => setConfirmEliminar(false)}
@@ -252,22 +250,27 @@ export function PedidoDetalle() {
         loading={eliminar.isPending}
       />
 
-      {/* Modal cambiar estado */}
       <Modal open={modalEstado} onClose={() => setModalEstado(false)} title="Cambiar estado del pedido">
         <div className="space-y-4">
-          <Select
-            label="Nuevo estado"
-            value={nuevoEstado}
-            onChange={(e) => setNuevoEstado(e.target.value as EstadoPedidoValue)}
-            options={ESTADOS_OPTIONS}
-          />
-          <Textarea
-            label="Descripción (opcional)"
-            rows={3}
-            value={descripcion}
-            onChange={(e) => setDescripcion(e.target.value)}
-            placeholder="Añade una nota sobre este cambio..."
-          />
+          <div>
+            <label className={LABEL_CLASS}>Nuevo estado</label>
+            <Select
+              className={FIELD_CLASS}
+              value={nuevoEstado}
+              onChange={(e) => setNuevoEstado(e.target.value as EstadoPedidoValue)}
+              options={ESTADOS_OPTIONS}
+            />
+          </div>
+          <div>
+            <label className={LABEL_CLASS}>Descripción (opcional)</label>
+            <Textarea
+              className={FIELD_CLASS}
+              rows={3}
+              value={descripcion}
+              onChange={(e) => setDescripcion(e.target.value)}
+              placeholder="Añade una nota sobre este cambio..."
+            />
+          </div>
           {cambiarEstado.isError && (
             <div className="flex items-center gap-2 text-red-400 text-sm bg-red-500/10 rounded-lg px-3 py-2">
               <AlertCircle className="w-4 h-4 shrink-0" />
@@ -283,24 +286,29 @@ export function PedidoDetalle() {
         </div>
       </Modal>
 
-      {/* Modal registrar pago */}
       <Modal open={modalPago} onClose={() => { setModalPago(false); registrarPago.reset(); }} title="Registrar pago">
         <div className="space-y-4">
-          <Input
-            label="Monto (S/)"
-            type="number"
-            min="0"
-            step="0.01"
-            value={monto}
-            onChange={(e) => setMonto(e.target.value)}
-            placeholder="0.00"
-          />
-          <Select
-            label="Método de pago"
-            value={metodoPago}
-            onChange={(e) => setMetodoPago(e.target.value)}
-            options={METODOS_PAGO}
-          />
+          <div>
+            <label className={LABEL_CLASS}>Monto (S/)</label>
+            <Input
+              className={FIELD_CLASS}
+              type="number"
+              min="0"
+              step="0.01"
+              value={monto}
+              onChange={(e) => setMonto(e.target.value)}
+              placeholder="0.00"
+            />
+          </div>
+          <div>
+            <label className={LABEL_CLASS}>Método de pago</label>
+            <Select
+              className={FIELD_CLASS}
+              value={metodoPago}
+              onChange={(e) => setMetodoPago(e.target.value)}
+              options={METODOS_PAGO}
+            />
+          </div>
           {registrarPago.isError && (
             <div className="flex items-center gap-2 text-red-400 text-sm bg-red-500/10 rounded-lg px-3 py-2">
               <AlertCircle className="w-4 h-4 shrink-0" />

@@ -16,11 +16,15 @@ import type { Servicio, PaginatedResponse } from "@/types";
 
 const schema = z.object({
   nombre_servicio: z.string().min(1, "Requerido"),
-  descripcion:     z.string().optional(),
-  precio_base:     z.coerce.number().min(0.01, "Debe ser mayor a 0"),
+  descripcion: z.string().optional(),
+  precio_base: z.coerce.number().min(0.01, "Debe ser mayor a 0"),
 });
 
 type FormData = z.infer<typeof schema>;
+
+const LABEL_CLASS = "text-sm font-medium text-black dark:text-white mb-1.5 block";
+const FIELD_CLASS =
+  "bg-white dark:bg-black text-black dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-400";
 
 export function Servicios() {
   const qc = useQueryClient();
@@ -117,27 +121,39 @@ export function Servicios() {
           onSubmit={handleSubmit((d) => editando ? editar.mutate(d) : crear.mutate(d))}
           className="space-y-4"
         >
-          <Input
-            label="Nombre del servicio"
-            {...register("nombre_servicio")}
-            error={errors.nombre_servicio?.message}
-            placeholder="Ej: Lavado a máquina"
-          />
-          <Textarea
-            label="Descripción"
-            rows={2}
-            {...register("descripcion")}
-            placeholder="Descripción del servicio..."
-          />
-          <Input
-            label="Precio base (S/ por kg)"
-            type="number"
-            step="0.01"
-            min="0"
-            {...register("precio_base")}
-            error={errors.precio_base?.message}
-            placeholder="0.00"
-          />
+          <div>
+            <label className={LABEL_CLASS}>Nombre del servicio</label>
+            <Input
+              className={FIELD_CLASS}
+              {...register("nombre_servicio")}
+              error={errors.nombre_servicio?.message}
+              placeholder="Ej: Lavado a máquina"
+            />
+          </div>
+
+          <div>
+            <label className={LABEL_CLASS}>Descripción</label>
+            <Textarea
+              className={FIELD_CLASS}
+              rows={2}
+              {...register("descripcion")}
+              placeholder="Descripción del servicio..."
+            />
+          </div>
+
+          <div>
+            <label className={LABEL_CLASS}>Precio base (S/ por kg)</label>
+            <Input
+              className={FIELD_CLASS}
+              type="number"
+              step="0.01"
+              min="0"
+              {...register("precio_base")}
+              error={errors.precio_base?.message}
+              placeholder="0.00"
+            />
+          </div>
+
           <div className="flex gap-3 pt-1">
             <Button type="button" variant="secondary" className="flex-1" onClick={cerrar}>Cancelar</Button>
             <Button type="submit" className="flex-1" loading={isSubmitting}>
