@@ -13,13 +13,16 @@ import { formatCurrency, formatDate, formatDateShort } from "@/lib/utils";
 import api from "@/lib/api";
 import type { Cliente, Pedido, PersonaAutorizada } from "@/types";
 
-// ── Modal agregar persona autorizada ──────────────────────────────────────────
 const paSchema = z.object({
-  nombres:  z.string().min(2, "Mínimo 2 caracteres"),
-  dni:      z.string().length(8, "DNI debe tener 8 dígitos").regex(/^\d+$/, "Solo números"),
+  nombres: z.string().min(2, "Mínimo 2 caracteres"),
+  dni: z.string().length(8, "DNI debe tener 8 dígitos").regex(/^\d+$/, "Solo números"),
   telefono: z.string().min(9, "Mínimo 9 dígitos").regex(/^\d+$/, "Solo números").optional().or(z.literal("")),
 });
 type PaForm = z.infer<typeof paSchema>;
+
+const LABEL_CLASS = "block text-xs font-medium text-black dark:text-white mb-1.5";
+const INPUT_CLASS =
+  "w-full px-3 py-2.5 text-sm bg-white dark:bg-black border border-slate-200 dark:border-white/10 text-black dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-colors";
 
 function ModalAgregarPA({
   clienteId,
@@ -36,8 +39,8 @@ function ModalAgregarPA({
   const mutation = useMutation({
     mutationFn: (data: PaForm) =>
       api.post(`/clientes/${clienteId}/personas-autorizadas/`, {
-        nombres:  data.nombres,
-        dni:      data.dni,
+        nombres: data.nombres,
+        dni: data.dni,
         telefono: data.telefono || null,
       }),
     onSuccess: () => {
@@ -46,15 +49,12 @@ function ModalAgregarPA({
     },
   });
 
-  const inputCls =
-    "w-full px-3 py-2.5 text-sm bg-white/5 border border-white/10 text-white placeholder:text-slate-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-colors";
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <div className="w-full max-w-sm bg-[#0F1120] border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-white/8">
-          <h3 className="text-sm font-semibold text-white">Agregar persona autorizada</h3>
-          <button onClick={onClose} className="p-1 rounded-lg hover:bg-white/8 text-slate-400 hover:text-white transition-colors cursor-pointer">
+      <div className="w-full max-w-sm bg-white dark:bg-[#0F1120] border border-slate-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-white/8">
+          <h3 className="text-sm font-semibold text-black dark:text-white">Agregar persona autorizada</h3>
+          <button onClick={onClose} className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-white/8 text-slate-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -64,20 +64,20 @@ function ModalAgregarPA({
           className="px-5 py-4 space-y-4"
         >
           <div>
-            <label className="block text-xs font-medium text-slate-400 mb-1.5">Nombres completos</label>
-            <input {...register("nombres")} placeholder="Ej: María García" className={inputCls} />
+            <label className={LABEL_CLASS}>Nombres completos</label>
+            <input {...register("nombres")} placeholder="Ej: María García" className={INPUT_CLASS} />
             {errors.nombres && <p className="mt-1 text-xs text-red-400">{errors.nombres.message}</p>}
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-400 mb-1.5">DNI</label>
-            <input {...register("dni")} placeholder="12345678" maxLength={8} className={inputCls} />
+            <label className={LABEL_CLASS}>DNI</label>
+            <input {...register("dni")} placeholder="12345678" maxLength={8} className={INPUT_CLASS} />
             {errors.dni && <p className="mt-1 text-xs text-red-400">{errors.dni.message}</p>}
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-400 mb-1.5">
-              Teléfono <span className="text-slate-600">(opcional)</span>
+            <label className={LABEL_CLASS}>
+              Teléfono <span className="text-slate-500 dark:text-slate-500">(opcional)</span>
             </label>
-            <input {...register("telefono")} placeholder="987654321" className={inputCls} />
+            <input {...register("telefono")} placeholder="987654321" className={INPUT_CLASS} />
             {errors.telefono && <p className="mt-1 text-xs text-red-400">{errors.telefono.message}</p>}
           </div>
 
@@ -101,7 +101,6 @@ function ModalAgregarPA({
   );
 }
 
-// ── Fila de persona autorizada ─────────────────────────────────────────────────
 function PARow({
   pa,
   clienteId,
@@ -116,10 +115,10 @@ function PARow({
   });
 
   return (
-    <div className="p-3 bg-white/4 rounded-lg flex items-start justify-between gap-3">
+    <div className="p-3 bg-slate-50 dark:bg-white/4 rounded-lg flex items-start justify-between gap-3">
       <div>
-        <p className="text-sm font-medium text-slate-100">{pa.nombres}</p>
-        <p className="text-xs text-slate-500">DNI: {pa.dni}{pa.telefono ? ` · ${pa.telefono}` : ""}</p>
+        <p className="text-sm font-medium text-slate-800 dark:text-slate-100">{pa.nombres}</p>
+        <p className="text-xs text-slate-500 dark:text-slate-400">DNI: {pa.dni}{pa.telefono ? ` · ${pa.telefono}` : ""}</p>
       </div>
       <button
         onClick={() => del.mutate()}
@@ -133,7 +132,6 @@ function PARow({
   );
 }
 
-// ── Página principal ───────────────────────────────────────────────────────────
 export function ClienteDetalle() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -157,66 +155,64 @@ export function ClienteDetalle() {
       <div className="flex items-center gap-4">
         <button
           onClick={() => navigate("/clientes")}
-          className="p-2 rounded-lg hover:bg-white/7 text-slate-400 transition-colors cursor-pointer"
+          className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/7 text-slate-400 transition-colors cursor-pointer"
         >
           <ArrowLeft className="w-5 h-5" />
         </button>
         <div className="flex items-center gap-4 flex-1">
-          <div className="w-12 h-12 rounded-full bg-violet-500/15 flex items-center justify-center text-violet-300 font-bold text-lg">
+          <div className="w-12 h-12 rounded-full bg-violet-500/15 flex items-center justify-center text-violet-500 dark:text-violet-300 font-bold text-lg">
             {cliente.nombres[0]}{cliente.apellidos[0]}
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-white">
+            <h1 className="text-2xl font-bold text-black dark:text-white">
               {cliente.nombres} {cliente.apellidos}
             </h1>
-            <p className="text-slate-400 text-sm">Desde {formatDateShort(cliente.fecha_registro)}</p>
+            <p className="text-slate-500 dark:text-slate-400 text-sm">Desde {formatDateShort(cliente.fecha_registro)}</p>
           </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="space-y-5">
-          {/* Contacto */}
           <Card>
-            <CardHeader><h2 className="text-sm font-semibold text-slate-100">Información de contacto</h2></CardHeader>
+            <CardHeader><h2 className="text-sm font-semibold text-black dark:text-white">Información de contacto</h2></CardHeader>
             <CardBody className="space-y-3">
               {cliente.telefono && (
-                <div className="flex items-center gap-3 text-sm text-slate-300">
+                <div className="flex items-center gap-3 text-sm text-slate-700 dark:text-slate-300">
                   <Phone className="w-4 h-4 text-slate-500" />
                   {cliente.telefono}
                 </div>
               )}
               {cliente.correo && (
-                <div className="flex items-center gap-3 text-sm text-slate-300">
+                <div className="flex items-center gap-3 text-sm text-slate-700 dark:text-slate-300">
                   <Mail className="w-4 h-4 text-slate-500" />
                   {cliente.correo}
                 </div>
               )}
               {cliente.direccion && (
-                <div className="flex items-center gap-3 text-sm text-slate-300">
+                <div className="flex items-center gap-3 text-sm text-slate-700 dark:text-slate-300">
                   <MapPin className="w-4 h-4 text-slate-500" />
                   {cliente.direccion}
                 </div>
               )}
               {!cliente.telefono && !cliente.correo && !cliente.direccion && (
-                <p className="text-sm text-slate-500">Sin datos de contacto</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">Sin datos de contacto</p>
               )}
             </CardBody>
           </Card>
 
-          {/* Personas autorizadas */}
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Users className="w-4 h-4 text-slate-500" />
-                  <h2 className="text-sm font-semibold text-slate-100">
+                  <h2 className="text-sm font-semibold text-black dark:text-white">
                     Personas autorizadas ({cliente.personas_autorizadas?.length ?? 0})
                   </h2>
                 </div>
                 <button
                   onClick={() => setShowModal(true)}
-                  className="flex items-center gap-1 text-xs font-medium text-violet-400 hover:text-violet-300 transition-colors cursor-pointer"
+                  className="flex items-center gap-1 text-xs font-medium text-violet-500 dark:text-violet-400 hover:text-violet-600 dark:hover:text-violet-300 transition-colors cursor-pointer"
                   title="Agregar persona autorizada"
                 >
                   <Plus className="w-3.5 h-3.5" />
@@ -226,7 +222,7 @@ export function ClienteDetalle() {
             </CardHeader>
             <CardBody className="space-y-2">
               {(cliente.personas_autorizadas ?? []).length === 0 ? (
-                <p className="text-sm text-slate-500">Sin personas autorizadas</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">Sin personas autorizadas</p>
               ) : (
                 cliente.personas_autorizadas!.map((p) => (
                   <PARow key={p.id} pa={p} clienteId={Number(id)} />
@@ -236,34 +232,33 @@ export function ClienteDetalle() {
           </Card>
         </div>
 
-        {/* Historial de pedidos */}
         <div className="lg:col-span-2">
           <Card>
             <CardHeader>
               <div className="flex items-center gap-2">
                 <ShoppingBag className="w-4 h-4 text-slate-500" />
-                <h2 className="text-sm font-semibold text-slate-100">
+                <h2 className="text-sm font-semibold text-black dark:text-white">
                   Historial de pedidos ({pedidos.length})
                 </h2>
               </div>
             </CardHeader>
-            <div className="divide-y divide-white/5">
+            <div className="divide-y divide-slate-100 dark:divide-white/5">
               {pedidos.length === 0 && (
-                <p className="px-5 py-8 text-sm text-slate-500 text-center">Sin pedidos registrados</p>
+                <p className="px-5 py-8 text-sm text-slate-500 dark:text-slate-400 text-center">Sin pedidos registrados</p>
               )}
               {pedidos.map((p) => (
                 <div
                   key={p.id}
                   onClick={() => navigate(`/pedidos/${p.id}`)}
-                  className="flex items-center justify-between px-5 py-3.5 hover:bg-white/4 transition-colors cursor-pointer"
+                  className="flex items-center justify-between px-5 py-3.5 hover:bg-slate-50 dark:hover:bg-white/4 transition-colors cursor-pointer"
                 >
                   <div>
-                    <p className="text-sm font-mono font-semibold text-violet-400">{p.codigo}</p>
-                    <p className="text-xs text-slate-500">{formatDate(p.fecha_ingreso)}</p>
+                    <p className="text-sm font-mono font-semibold text-violet-500 dark:text-violet-400">{p.codigo}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">{formatDate(p.fecha_ingreso)}</p>
                   </div>
                   <div className="flex items-center gap-4">
                     <EstadoBadge estado={p.estado} />
-                    <p className="text-sm font-semibold text-white w-20 text-right">
+                    <p className="text-sm font-semibold text-black dark:text-white w-20 text-right">
                       {formatCurrency(p.total)}
                     </p>
                   </div>

@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { Login } from "@/pages/Login";
@@ -80,6 +82,16 @@ export default function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
+
+      <ToastContainer
+        position="top-right"
+        autoClose={3500}
+        newestOnTop
+        closeOnClick
+        pauseOnHover
+        theme={isDark ? "dark" : "light"}
+        toastClassName="!whitespace-pre-line !break-words"
+      />
     </QueryClientProvider>
   );
 }

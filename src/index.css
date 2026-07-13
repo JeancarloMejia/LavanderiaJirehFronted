@@ -42,3 +42,40 @@
     background: #22a8b6;
   }
 }
+
+
+.Toastify__toast-container {
+  width: 24rem;
+}
+
+.Toastify__toast {
+  border-radius: 0.75rem;
+}
+
+.Toastify__toast-body {
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.4;
+}
+
+@media (max-width: 640px) {
+  .Toastify__toast-container--top-right {
+    top: 0.75rem !important;
+    right: 0.75rem !important;
+    left: 50vw !important;
+    width: calc(50vw - 0.75rem) !important;
+    margin: 0 !important;
+  }
+
+  .Toastify__toast {
+    margin-bottom: 0.5rem !important;
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.8rem !important;
+  }
+
+  .Toastify__toast-body {
+    white-space: normal !important;
+    word-break: break-word !important;
+    line-height: 1.35 !important;
+  }
+}

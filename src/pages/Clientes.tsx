@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus, Search, Users, Phone, Mail, History, Pencil, Trash2 } from "lucide-react";
+import { toast } from "react-toastify";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,36 +19,47 @@ import { useNavigate } from "react-router-dom";
 const PAGE_SIZE = 6;
 
 const schema = z.object({
-  nombres:   z.string().min(1, "Requerido"),
+  nombres: z.string().min(1, "Requerido"),
   apellidos: z.string().min(1, "Requerido"),
-  telefono:  z.string().optional(),
-  correo:    z.string().email("Email inválido").optional().or(z.literal("")),
+  telefono: z.string().optional(),
+  correo: z.string().email("Email inválido").optional().or(z.literal("")),
   direccion: z.string().optional(),
 });
 
 type FormData = z.infer<typeof schema>;
 
+function extraerMensajeError(err: unknown, fallback: string): string {
+  const d = (err as { response?: { data?: Record<string, unknown> } }).response?.data;
+  if (d && typeof d === "object") {
+    if (typeof (d as any).error === "string") return (d as any).error;
+    if (typeof (d as any).detail === "string") return (d as any).detail;
+    const joined = Object.values(d).flat().filter(Boolean).join(" ");
+    return joined || fallback;
+  }
+  return fallback;
+}
+
 export function Clientes() {
   const navigate = useNavigate();
   const qc = useQueryClient();
 
-  const [page, setPage]                 = useState(1);
-  const [search, setSearch]             = useState("");
-  const [modalOpen, setModalOpen]       = useState(false);
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
   const [confirmModal, setConfirmModal] = useState(false);
   const [eliminandoId, setEliminandoId] = useState<number | null>(null);
-  const [editando, setEditando]         = useState<Cliente | null>(null);
-  const [apiError, setApiError]         = useState<string | null>(null);
+  const [editando, setEditando] = useState<Cliente | null>(null);
+  const [apiError, setApiError] = useState<string | null>(null);
 
   const { data, isLoading } = useQuery<PaginatedResponse<Cliente>>({
     queryKey: ["clientes", page],
     queryFn: () => api.get(`/clientes/?page=${page}&page_size=${PAGE_SIZE}`).then((r) => r.data),
   });
 
-  const total      = data?.count ?? 0;
+  const total = data?.count ?? 0;
   const totalPages = Math.ceil(total / PAGE_SIZE);
 
-  const clientes  = data?.results ?? [];
+  const clientes = data?.results ?? [];
   const filtrados = clientes.filter(
     (c) =>
       `${c.nombres} ${c.apellidos}`.toLowerCase().includes(search.toLowerCase()) ||
@@ -60,23 +72,26 @@ export function Clientes() {
   });
 
   const handleError = (err: unknown) => {
-    const d = (err as { response?: { data?: Record<string, unknown> } }).response?.data;
-    if (d && typeof d === "object") {
-      setApiError(Object.values(d).flat().join(" ") || "Error al guardar.");
-    } else {
-      setApiError("Error al guardar. Verifica los datos.");
-    }
+    setApiError(extraerMensajeError(err, "Error al guardar."));
   };
 
   const crear = useMutation({
     mutationFn: (d: FormData) => api.post("/clientes/", d),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["clientes"] }); cerrar(); },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["clientes"] });
+      toast.success("Cliente creado exitosamente");
+      cerrar();
+    },
     onError: handleError,
   });
 
   const editar = useMutation({
     mutationFn: (d: FormData) => api.put(`/clientes/${editando!.id}/`, d),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["clientes"] }); cerrar(); },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["clientes"] });
+      toast.success("Cliente actualizado exitosamente");
+      cerrar();
+    },
     onError: handleError,
   });
 
@@ -84,9 +99,15 @@ export function Clientes() {
     mutationFn: (id: number) => api.delete(`/clientes/${id}/`),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["clientes"] });
+      toast.success("Eliminado exitosamente");
       setConfirmModal(false);
       setEliminandoId(null);
       if (clientes.length === 1 && page > 1) setPage((p) => p - 1);
+    },
+    onError: (err) => {
+      toast.error(extraerMensajeError(err, "No se pudo eliminar el cliente."));
+      setConfirmModal(false);
+      setEliminandoId(null);
     },
   });
 
