@@ -5,6 +5,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, AnimatePresence } from "framer-motion";
 import { WashingMachine, Lock, User, Eye, EyeOff, ArrowLeft, ShieldCheck } from "lucide-react";
+import { toast } from "react-toastify";
 import { useAuthStore } from "@/store/auth";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
@@ -33,14 +34,26 @@ export function Login() {
       const res = await api.post("/auth/login/", data);
       setTokens(res.data.access, res.data.refresh);
       if (res.data.empleado) setEmpleado(res.data.empleado);
+      toast.success("Login exitoso");
       navigate("/dashboard");
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
-        const msg = err.response?.data?.detail
-          || err.response?.data?.non_field_errors?.[0]
-          || err.response?.data?.error
-          || "Credenciales incorrectas";
+        if (err.response?.status === 401) {
+          const msg = "Credenciales incorrectas";
+          setServerError(msg);
+          toast.error(msg);
+        } else {
+          const msg = err.response?.data?.detail
+            || err.response?.data?.non_field_errors?.[0]
+            || err.response?.data?.error
+            || "Credenciales incorrectas";
+          setServerError(msg);
+          toast.error(msg);
+        }
+      } else {
+        const msg = "Ocurrió un error inesperado. Intenta nuevamente.";
         setServerError(msg);
+        toast.error(msg);
       }
     }
   };
@@ -124,9 +137,9 @@ export function Login() {
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl px-4 py-3 overflow-hidden"
+                  className="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl px-4 py-3 overflow-hidden flex justify-center"
                 >
-                  <p className="text-red-600 dark:text-red-400 text-sm">{serverError}</p>
+                  <p className="text-red-600 dark:text-red-400 text-sm text-center">{serverError}</p>
                 </motion.div>
               )}
             </AnimatePresence>

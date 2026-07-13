@@ -2,8 +2,9 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
-  ArrowLeft, Package, Clock, ChevronRight, Calculator, CreditCard, AlertCircle, FileText, Trash2,
+  ArrowLeft, Package, Clock, ChevronRight, CreditCard, AlertCircle, FileText, Trash2,
 } from "lucide-react";
+import { toast } from "react-toastify";
 import { Card, CardHeader, CardBody } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { EstadoBadge } from "@/components/ui/badge";
@@ -37,6 +38,17 @@ const LABEL_CLASS = "text-sm font-medium text-black dark:text-white mb-1.5 block
 const FIELD_CLASS =
   "bg-white dark:bg-black text-black dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-400";
 
+function extraerMensajeError(err: unknown, fallback: string): string {
+  const d = (err as { response?: { data?: Record<string, unknown> } }).response?.data;
+  if (d && typeof d === "object") {
+    if (typeof (d as any).error === "string") return (d as any).error;
+    if (typeof (d as any).detail === "string") return (d as any).detail;
+    const joined = Object.values(d).flat().filter(Boolean).join(" ");
+    return joined || fallback;
+  }
+  return fallback;
+}
+
 export function PedidoDetalle() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -60,7 +72,12 @@ export function PedidoDetalle() {
     mutationFn: () => api.delete(`/pedidos/${id}/`),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["pedidos"] });
+      toast.success("Pedido eliminado exitosamente");
       navigate("/pedidos");
+    },
+    onError: (err) => {
+      toast.error(extraerMensajeError(err, "No se pudo eliminar el pedido."));
+      setConfirmEliminar(false);
     },
   });
 
@@ -75,8 +92,13 @@ export function PedidoDetalle() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["pedido", id] });
       qc.invalidateQueries({ queryKey: ["pedidos"] });
+      calcularTotal.mutate();
+      toast.success("Estado actualizado exitosamente");
       setModalEstado(false);
       setDescripcion("");
+    },
+    onError: (err) => {
+      toast.error(extraerMensajeError(err, "Error al cambiar el estado"));
     },
   });
 
@@ -86,8 +108,12 @@ export function PedidoDetalle() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["pagos"] });
       qc.invalidateQueries({ queryKey: ["pedido", id] });
+      toast.success("Pago registrado exitosamente");
       setModalPago(false);
       setMonto("");
+    },
+    onError: (err) => {
+      toast.error(extraerMensajeError(err, "Error al registrar el pago"));
     },
   });
 
@@ -112,11 +138,6 @@ export function PedidoDetalle() {
           </div>
         </div>
         <div className="flex items-center gap-2 flex-wrap sm:shrink-0">
-          {!isOperario && (
-            <Button variant="outline" leftIcon={<Calculator className="w-4 h-4" />} onClick={() => calcularTotal.mutate()} loading={calcularTotal.isPending}>
-              Calcular total
-            </Button>
-          )}
           {!isOperario && (
             <Button
               variant="outline"
@@ -274,7 +295,7 @@ export function PedidoDetalle() {
           {cambiarEstado.isError && (
             <div className="flex items-center gap-2 text-red-400 text-sm bg-red-500/10 rounded-lg px-3 py-2">
               <AlertCircle className="w-4 h-4 shrink-0" />
-              <span>Error al cambiar el estado</span>
+              <span>{extraerMensajeError(cambiarEstado.error, "Error al cambiar el estado")}</span>
             </div>
           )}
           <div className="flex gap-3 pt-1">
@@ -312,12 +333,7 @@ export function PedidoDetalle() {
           {registrarPago.isError && (
             <div className="flex items-center gap-2 text-red-400 text-sm bg-red-500/10 rounded-lg px-3 py-2">
               <AlertCircle className="w-4 h-4 shrink-0" />
-              <span>
-                {(registrarPago.error as any)?.response?.data?.error
-                  ?? (registrarPago.error as any)?.response?.data?.detail
-                  ?? (registrarPago.error as any)?.response?.data?.non_field_errors?.[0]
-                  ?? "Error al registrar el pago"}
-              </span>
+              <span>{extraerMensajeError(registrarPago.error, "Error al registrar el pago")}</span>
             </div>
           )}
           <div className="flex gap-3 pt-1">

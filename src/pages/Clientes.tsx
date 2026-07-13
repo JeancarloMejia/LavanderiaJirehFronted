@@ -18,12 +18,20 @@ import { useNavigate } from "react-router-dom";
 
 const PAGE_SIZE = 6;
 
+const soloLetras = /^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+$/;
+
 const schema = z.object({
-  nombres: z.string().min(1, "Requerido"),
-  apellidos: z.string().min(1, "Requerido"),
-  telefono: z.string().optional(),
-  correo: z.string().email("Email inválido").optional().or(z.literal("")),
-  direccion: z.string().optional(),
+  nombres: z.string().min(3, "Mínimo 3 letras").regex(soloLetras, "Solo se permiten letras"),
+  apellidos: z.string().min(3, "Mínimo 3 letras").regex(soloLetras, "Solo se permiten letras"),
+  dni: z.string().length(8, "DNI debe tener 8 dígitos").regex(/^\d+$/, "Solo números"),
+  telefono: z
+    .string()
+    .optional()
+    .refine((v) => !v || (/^\d+$/.test(v) && v.length <= 9), "Máximo 9 dígitos y solo números"),
+  correo: z.string().min(1, "Requerido").email("Formato de correo inválido"),
+  direccion: z
+    .string()
+    .refine((v) => v.trim().split(/\s+/).some((palabra) => palabra.length >= 4), "Debe tener al menos una palabra de 4 letras"),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -64,7 +72,8 @@ export function Clientes() {
     (c) =>
       `${c.nombres} ${c.apellidos}`.toLowerCase().includes(search.toLowerCase()) ||
       c.correo?.toLowerCase().includes(search.toLowerCase()) ||
-      c.telefono?.includes(search)
+      c.telefono?.includes(search) ||
+      c.dni?.includes(search)
   );
 
   const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm<FormData>({
@@ -72,7 +81,9 @@ export function Clientes() {
   });
 
   const handleError = (err: unknown) => {
-    setApiError(extraerMensajeError(err, "Error al guardar."));
+    const mensaje = extraerMensajeError(err, "Error al guardar.");
+    setApiError(mensaje);
+    toast.error(mensaje);
   };
 
   const crear = useMutation({
@@ -118,6 +129,7 @@ export function Clientes() {
     setEditando(c);
     setValue("nombres", c.nombres);
     setValue("apellidos", c.apellidos);
+    setValue("dni", c.dni ?? "");
     setValue("telefono", c.telefono ?? "");
     setValue("correo", c.correo ?? "");
     setValue("direccion", c.direccion ?? "");
@@ -196,6 +208,11 @@ export function Clientes() {
                     </div>
                   </div>
                   <div className="mt-3 space-y-1.5">
+                    {cliente.dni && (
+                      <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                        <span className="font-medium">DNI:</span> {cliente.dni}
+                      </div>
+                    )}
                     {cliente.telefono && (
                       <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
                         <Phone className="w-3.5 h-3.5 shrink-0" />
@@ -241,10 +258,11 @@ export function Clientes() {
             <Input label="Apellidos" {...register("apellidos")} error={errors.apellidos?.message} />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Input label="Teléfono" {...register("telefono")} placeholder="999 000 000" />
-            <Input label="Correo" type="email" {...register("correo")} placeholder="correo@ejemplo.com" error={errors.correo?.message} />
+            <Input label="DNI" {...register("dni")} placeholder="12345678" maxLength={8} error={errors.dni?.message} />
+            <Input label="Teléfono" {...register("telefono")} placeholder="987654321" maxLength={9} error={errors.telefono?.message} />
           </div>
-          <Input label="Dirección" {...register("direccion")} placeholder="Av. Principal 123..." />
+          <Input label="Correo" type="email" {...register("correo")} placeholder="correo@ejemplo.com" error={errors.correo?.message} />
+          <Input label="Dirección" {...register("direccion")} placeholder="Av. Principal 123..." error={errors.direccion?.message} />
           {apiError && (
             <p className="text-sm text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-lg px-3 py-2">{apiError}</p>
           )}

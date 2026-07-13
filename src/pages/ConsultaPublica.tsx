@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, WashingMachine, Package, Clock, CheckCircle2, XCircle, Loader2, ShieldCheck, Sparkles, Phone } from "lucide-react";
 import { formatCurrency, formatDate, cn } from "@/lib/utils";
@@ -16,27 +17,27 @@ interface PedidoPublico {
 }
 
 const ESTADO_ICONS: Record<string, React.ReactNode> = {
-  pendiente:  <Clock className="w-5 h-5 text-amber-500" />,
+  pendiente: <Clock className="w-5 h-5 text-amber-500" />,
   en_proceso: <Loader2 className="w-5 h-5 text-primary animate-spin" />,
-  listo:      <CheckCircle2 className="w-5 h-5 text-emerald-500" />,
-  entregado:  <CheckCircle2 className="w-5 h-5 text-gray-400" />,
-  cancelado:  <XCircle className="w-5 h-5 text-red-500" />,
+  listo: <CheckCircle2 className="w-5 h-5 text-emerald-500" />,
+  entregado: <CheckCircle2 className="w-5 h-5 text-gray-400" />,
+  cancelado: <XCircle className="w-5 h-5 text-red-500" />,
 };
 
 const ESTADO_LABELS: Record<string, string> = {
-  pendiente:  "Pendiente",
+  pendiente: "Pendiente",
   en_proceso: "En proceso",
-  listo:      "Listo para recoger",
-  entregado:  "Entregado",
-  cancelado:  "Cancelado",
+  listo: "Listo para recoger",
+  entregado: "Entregado",
+  cancelado: "Cancelado",
 };
 
 const ESTADOS_TIMELINE: EstadoPedidoValue[] = ["pendiente", "en_proceso", "listo", "entregado"];
 
 const FEATURES = [
-  { icon: Sparkles,    color: "text-primary",    bg: "bg-primary/10", title: "En tiempo real",   desc: "Actualizado al instante" },
-  { icon: ShieldCheck, color: "text-emerald-600", bg: "bg-emerald-50", title: "Seguro",           desc: "Solo con tu código" },
-  { icon: Package,     color: "text-amber-600",   bg: "bg-amber-50",   title: "Historial completo", desc: "Cada paso del proceso" },
+  { icon: Sparkles, color: "text-primary", bg: "bg-primary/10", title: "En tiempo real", desc: "Actualizado al instante" },
+  { icon: ShieldCheck, color: "text-emerald-600", bg: "bg-emerald-50", title: "Seguro", desc: "Solo con tu código" },
+  { icon: Package, color: "text-amber-600", bg: "bg-amber-50", title: "Historial completo", desc: "Cada paso del proceso" },
 ];
 
 function estadoIndex(e: EstadoPedidoValue) {
@@ -44,24 +45,40 @@ function estadoIndex(e: EstadoPedidoValue) {
 }
 
 export function ConsultaPublica() {
-  const [codigo, setCodigo] = useState("");
+  const { codigo: codigoParam } = useParams<{ codigo?: string }>();
+  const navigate = useNavigate();
+  const [codigo, setCodigo] = useState(codigoParam ?? "");
   const [pedido, setPedido] = useState<PedidoPublico | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const buscar = async () => {
-    if (!codigo.trim()) return;
+  const buscar = async (codigoBuscado?: string) => {
+    const valor = (codigoBuscado ?? codigo).trim();
+    if (!valor) return;
     setLoading(true);
     setError("");
     setPedido(null);
     try {
-      const res = await api.get(`/pedido/${codigo.trim().toUpperCase()}/`);
+      const res = await api.get(`/pedido/${valor.toUpperCase()}/`);
       setPedido(res.data);
     } catch {
       setError("No encontramos ningún pedido con ese código. Verifica e intenta nuevamente.");
     } finally {
       setLoading(false);
     }
+  };
+
+  useEffect(() => {
+    if (codigoParam) {
+      setCodigo(codigoParam);
+      buscar(codigoParam);
+    }
+  }, [codigoParam]);
+
+  const handleBuscarManual = () => {
+    const valor = codigo.trim().toUpperCase();
+    if (!valor) return;
+    navigate(`/seguimiento/${valor}`);
   };
 
   const currentStep = pedido ? estadoIndex(pedido.estado_actual) : -1;
@@ -115,14 +132,14 @@ export function ConsultaPublica() {
             <input
               value={codigo}
               onChange={(e) => setCodigo(e.target.value.toUpperCase())}
-              onKeyDown={(e) => e.key === "Enter" && buscar()}
+              onKeyDown={(e) => e.key === "Enter" && handleBuscarManual()}
               placeholder="Ej: LAV-AB12CD"
               className="flex-1 bg-gray-50 border border-gray-200 text-dark placeholder:text-gray-400 rounded-xl px-4 py-3 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
             />
             <motion.button
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
-              onClick={buscar}
+              onClick={handleBuscarManual}
               disabled={loading || !codigo.trim()}
               className="bg-primary hover:bg-primary/90 disabled:opacity-50 text-white rounded-xl px-4 py-3 transition-all flex items-center gap-2 font-medium text-sm cursor-pointer disabled:cursor-not-allowed shrink-0"
             >
@@ -146,7 +163,7 @@ export function ConsultaPublica() {
         </motion.div>
 
         <AnimatePresence>
-          {!pedido && (
+          {!pedido && !loading && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

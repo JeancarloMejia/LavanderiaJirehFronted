@@ -11,6 +11,13 @@ const api = axios.create({
   timeout: 15000,
 });
 
+const AUTH_PATHS = ["/auth/login", "/auth/refresh", "/auth/registro"];
+
+function esRutaDeAuth(url?: string): boolean {
+  if (!url) return false;
+  return AUTH_PATHS.some((path) => url.includes(path));
+}
+
 api.interceptors.request.use((config) => {
   const token = useAuthStore.getState().accessToken;
 
@@ -25,6 +32,10 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const original = error.config;
+
+    if (esRutaDeAuth(original?.url)) {
+      return Promise.reject(error);
+    }
 
     if (error.response?.status === 401 && !original._retry) {
       original._retry = true;

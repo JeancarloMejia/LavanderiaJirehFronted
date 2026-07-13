@@ -59,6 +59,7 @@ export default function App() {
             <Route path="/politica-privacidad" element={<PoliticaPrivacidad />} />
             <Route path="/terminos-de-uso" element={<TerminosUso />} />
             <Route path="/seguimiento" element={<ConsultaPublica />} />
+            <Route path="/seguimiento/:codigo" element={<ConsultaPublica />} />
             <Route path="/pedido/:codigo" element={<ConsultaPublica />} />
             <Route path="/registro" element={<Registro />} />
             <Route path="/login" element={<Login />} />

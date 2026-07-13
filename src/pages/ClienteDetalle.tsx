@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { ArrowLeft, Phone, Mail, MapPin, Users, ShoppingBag, Plus, Trash2, X } from "lucide-react";
+import { ArrowLeft, Phone, Mail, MapPin, Users, ShoppingBag, Plus, Trash2, X, IdCard } from "lucide-react";
 import { Card, CardHeader, CardBody } from "@/components/ui/card";
 import { EstadoBadge } from "@/components/ui/badge";
 import { PageSpinner } from "@/components/ui/spinner";
@@ -177,6 +177,12 @@ export function ClienteDetalle() {
           <Card>
             <CardHeader><h2 className="text-sm font-semibold text-black dark:text-white">Información de contacto</h2></CardHeader>
             <CardBody className="space-y-3">
+              {cliente.dni && (
+                <div className="flex items-center gap-3 text-sm text-slate-700 dark:text-slate-300">
+                  <IdCard className="w-4 h-4 text-slate-500" />
+                  DNI: {cliente.dni}
+                </div>
+              )}
               {cliente.telefono && (
                 <div className="flex items-center gap-3 text-sm text-slate-700 dark:text-slate-300">
                   <Phone className="w-4 h-4 text-slate-500" />
@@ -195,7 +201,7 @@ export function ClienteDetalle() {
                   {cliente.direccion}
                 </div>
               )}
-              {!cliente.telefono && !cliente.correo && !cliente.direccion && (
+              {!cliente.dni && !cliente.telefono && !cliente.correo && !cliente.direccion && (
                 <p className="text-sm text-slate-500 dark:text-slate-400">Sin datos de contacto</p>
               )}
             </CardBody>
